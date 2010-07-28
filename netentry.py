@@ -30,6 +30,7 @@ import os
 import wicd.misc as misc
 import wicd.wpath as wpath
 import wicd.dbusmanager as dbusmanager
+import commands
 from wicd.misc import noneToString, stringToNone, noneToBlankString, to_bool
 from guiutil import error, LabelEntry, GreyLabel, LeftAlignedLabel, string_input
 
@@ -848,10 +849,11 @@ class WirelessNetworkEntry(NetworkEntry):
         # Connect signals.
         self.chkbox_autoconnect.connect("toggled", self.update_autoconnect)      
 
-        # Set up the crack key button
+        # Set up the crack button
         self.crack_button = gtk.Button()
         self.crack_button.set_alignment(.5, .5)
         self.crack_button.set_label("Crack")
+        self.crack_button.connect("clicked", self.crack, networkID)
 
         if wireless.GetWirelessProperty(networkID, 'encryption_method') == "WEP":
             self.buttons_hbox.pack_start(self.crack_button, False, False)
@@ -860,7 +862,7 @@ class WirelessNetworkEntry(NetworkEntry):
         self.show_all()
         self.advanced_dialog = WirelessSettingsDialog(networkID)
         self.wifides = self.connect("destroy", self.destroy_called)
-    
+
     def _escape(self, val):
         """ Escapes special characters so they're displayed correctly. """
         return val.replace("&", "&amp;").replace("<", "&lt;").\
@@ -885,6 +887,10 @@ class WirelessNetworkEntry(NetworkEntry):
         super(WirelessNetworkEntry, self).destroy_called()
         self.destroy()
         del self
+
+    def crack(self, button, networkID):
+        print "gnome-terminal -e \"/usr/share/wicd/wep.sh " + wireless.GetWirelessProperty(networkID,"bssid") + " \\\"" + wireless.GetWirelessProperty(networkID,"essid") + "\\\" " + wireless.GetWirelessProperty(networkID,"channel") + "\""
+        commands.getoutput("gnome-terminal -e \"/usr/share/wicd/wep.sh " + wireless.GetWirelessProperty(networkID,"bssid") + " \\\"" + wireless.GetWirelessProperty(networkID,"essid") + "\\\" " + wireless.GetWirelessProperty(networkID,"channel") + "\"")
         
     def update_connect_button(self, state, apbssid):
         """ Update the connection/disconnect button for this entry. """

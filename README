@@ -1,0 +1,32 @@
+This is a project of mine (ə) to attempt to bring the Wicd network manager and the
+aircrack-ng suite together. In particular, the WEP cracking bits of aircrack-ng. If
+you have any suggestions for how I could do this better, please speak up. I am not
+an expert, and welcome any assistance/advice I can get. Also feel free to submit
+ideas and such that you may have but for whatever reason don't feel like implimenting
+your self.
+
+== INSTALLING ==
+The easiest way to install it is to run the install script (be sure to do so as root)
+then restart the Wicd client. It will copy my modified version of netentry.py to
+/usr/share/wicd/gkt/netentry.py and a bash script called "wep.sh" to 
+/usr/share/wicd/wep.sh. Note that the original netentry.py will be copied to
+netentry.py.old in that same directory if you ever wish to restore it. Also be sure to
+edit wep.sh before installing. At the very top two variables are defined: device and mac.
+device needs to be set to the device that aireplay-ng and airodump-ng will use. Airmon-ng
+creates it typically, and typically sets it to mon0 (but I've seen otherwise so I left it
+as an option to change). mac needs to be set to that devices mac address (can be found by
+running ifconfig. It will be the same as your wifi card). Then go down to the next line
+that says "airmon-ng start wlan0" and change wlan0 to your actual wifi card.
+
+You should have Wicd and the aircrack-ng suite installed before this.
+
+== Future Plans ==
+Ideas I had for the future. No particular order:
+- Make it do more than just show a button (actually launch aircrack and the rest of
+	the needed programs)
+- Make it automatically save the cracked key when it gets it
+- Option to automatically crack all networks upon scan
+- Option to automatically connect upon successful crack
+- Not really related to aircrack, but option to have wicd automatically connect to
+	unsecured networks as soon as they are detected.
+- Make the whole thing GTK based, no more terminal work.
