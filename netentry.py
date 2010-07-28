@@ -9,6 +9,7 @@ contained within them.
 #   Copyright (C) 2008-2009 Adam Blackburn
 #   Copyright (C) 2008-2009 Dan O'Reilly
 #   Copyright (C) 2009      Andrew Psaltis
+#   Modified      2010      upsidedown e
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License Version 2 as
@@ -600,15 +601,8 @@ class NetworkEntry(gtk.HBox):
         self.advanced_button.set_label(language['properties'])
         self.advanced_button.set_image(self.advanced_image)
 
-        # Set up the crack key button
-
-        self.crack_button = gtk.Button()
-        self.crack_button.set_alignment(.5, .5)
-        self.crack_button.set_label("Crack")
-        
         self.buttons_hbox.pack_start(self.connect_hbox, False, False)
         self.buttons_hbox.pack_start(self.advanced_button, False, False)
-        self.buttons_hbox.pack_start(self.crack_button, False, False)
 
         self.vbox_top = gtk.VBox(False, 0)
         self.expander_vbox.pack_start(self.name_label)
@@ -701,6 +695,7 @@ class WiredNetworkEntry(NetworkEntry):
         self.disconnect(self.wireddis)
         self.advanced_dialog.destroy_called()
         del self.advanced_dialog
+
         super(WiredNetworkEntry, self).destroy_called()
         self.destroy()
         del self
@@ -852,6 +847,14 @@ class WirelessNetworkEntry(NetworkEntry):
         
         # Connect signals.
         self.chkbox_autoconnect.connect("toggled", self.update_autoconnect)      
+
+        # Set up the crack key button
+        self.crack_button = gtk.Button()
+        self.crack_button.set_alignment(.5, .5)
+        self.crack_button.set_label("Crack")
+
+        if wireless.GetWirelessProperty(networkID, 'encryption_method') == "WEP":
+            self.buttons_hbox.pack_start(self.crack_button, False, False)
         
         # Show everything
         self.show_all()
